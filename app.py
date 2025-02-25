@@ -189,8 +189,6 @@ def prepare_llm_args(system_prompt: str, question_image: str, model: str, questi
     
     if model == "openai/o1":
         args["reasoning_effort"] = "low"
-
-    print(args)
         
     return args
 
@@ -198,7 +196,6 @@ async def process_openai_model_async(llm_args: Dict[str, Any], math_answer_model
     """Process question with OpenAI models asynchronously"""
     llm_args["response_format"] = math_answer_model
     completion = await async_client.beta.chat.completions.parse(**llm_args)
-    print(completion)
     logger.info(f"Completed API call for model: {llm_args['model']}")
     return completion.choices[0].message.parsed
 
