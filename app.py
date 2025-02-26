@@ -34,18 +34,32 @@ MODELS = [
     # "openai/o1",
     "openai/gpt-4o-mini-2024-07-18",
     "openai/gpt-4o-2024-11-20",
+    "google/gemini-2.0-pro-exp-02-05:free",
     "google/gemini-2.0-flash-001",
     "google/learnlm-1.5-pro-experimental:free",
     "anthropic/claude-3.7-sonnet"
 ]
 
 DEFAULT_SYSTEM_PROMPT = """
-Analyse the given math question and provide:
-(i) your understanding of what the question is about and asking for
-(ii) your workings
-(iii) your answer
-(iv) your explanation
-(v) a hint
+Analyse the given Singapore Secondary School math question and any relevant diagram(s) and provide:
+
+1. your understanding of what the question is about and asking for
+2. your step-by-step workings to solve this question
+3. your final answer (remember to include units, if applicable)
+4. your explanation of your approach/workings/answer to a student who may not understand this question
+5. a brief hint to a student who may be stuck on this question
+
+Please think step by step.
+""".strip()
+
+MODEL_DESCRIPTION = """
+- `o1`: OpenAI's main reasoning model, optimized for reasoning (note: `o3-mini` does not support visual inputs)
+- `gpt-4o-mini-2024-07-18`: OpenAI's fast/cheap model, same model used for SLS currently
+- `gpt-4o-2024-11-20`: OpenAI's latest non-reasoning model, good for most tasks
+- `gemini-2.0-pro-exp-02-05:free`: Google's best model
+- `gemini-2.0-flash-001`: Google's fast/cheap model (much newer than gpt-4o-mini)
+- `learnlm-1.5-pro-experimental:free`: Google's experimental model, fine-tuned for following padegogical instructions given by the user
+- `claude-3.7-sonnet`: Anthropic's latest model, good for most tasks. Reasoning is available in the model, but not enabled for this demo yet.
 """.strip()
 
 # PASSWORD = os.getenv("PASSWORD")
@@ -414,14 +428,7 @@ def show_main_ui() -> None:
     st.title("Visual Math Eval Tool")
 
     with st.expander("About each model"):
-        st.write("""
-        - `o1`: OpenAI's main reasoning model, optimized for reasoning (note: `o3-mini` does not support visual inputs)
-        - `gpt-4o-mini`: OpenAI's fast/cheap model, same model used for SLS currently
-        - `gpt-4o-2024-11-20`: OpenAI's latest non-reasoning model, good for most tasks
-        - `gemini-2.0-flash-001`: Google's latest low-cost model, good for most tasks (in the same price category as GPT-4o-mini)
-        - `learnlm-1.5-pro-experimental`: Google's experimental model, fine-tuned for following padegogical instructions given by the user
-        - `claude-3.7-sonnet`: Anthropic's latest model, good for most tasks. Reasoning is available in the model, but not enabled for this demo yet.
-        """)
+        st.write(MODEL_DESCRIPTION)
     
     # Tabs for choosing between pre-loaded and custom questions
     tab1, tab2 = st.tabs(["Pre-loaded Questions", "Upload Your Own Question"])
@@ -431,7 +438,7 @@ def show_main_ui() -> None:
         system_prompt = st.text_area(
             "Enter your system prompt", 
             value=DEFAULT_SYSTEM_PROMPT, 
-            height=200,
+            height=300,
             key="preloaded_system_prompt"
         )
         
